@@ -30,7 +30,7 @@ if num_batches==-1:
       num_batches= int(samples/batch_size)+1
 num_threads = 20
 depth = 152
-ckpt_path = 'F:\iot\last\phase2'     # Directory of the checkpoints
+ckpt_path =   '/home/AnimalActivityRecognition/phase2' #'F:\iot\last\phase2'     # Directory of the checkpoints
 
 def _test_preprocess(reshaped_image, crop_size, num_channels):
 
