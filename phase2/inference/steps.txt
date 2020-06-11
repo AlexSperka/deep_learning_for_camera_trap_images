@@ -2,6 +2,8 @@
 
 2) download weights in the same path of the repo
 
+copy and paste the following commands in the terminal:
+
 3) unzip ./phase2.zip -d ./deep_learning_for_camera_trap_images/phase2/inference/
 
 4) cd ./deep_learning_for_camera_trap_images/phase2/
