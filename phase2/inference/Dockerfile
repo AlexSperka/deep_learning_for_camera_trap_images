@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.15.2-gpu
+FROM python:3.7
 
 #application port
 EXPOSE 5000

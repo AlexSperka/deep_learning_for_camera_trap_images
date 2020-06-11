@@ -1,4 +1,4 @@
-from cv2 import cv2
+import cv2
 import numpy as np
 
 import requests
@@ -11,7 +11,7 @@ def encode_img(image):
     return str(enc_buff, 'utf-8')
 
 def visualize_animal_activity(img):
-    url = "http://127.0.0.1:5000/model/api/v1.0/"
+    url = "http://0.0.0.0:5000/model/api/v1.0/"
     headers = {'Content-Type': 'application/json'}
     image_req = json.dumps({'img': str(encode_img(img))})
     response = requests.request("POST", url=url+'recognize', headers=headers, data=image_req)
@@ -20,7 +20,7 @@ def visualize_animal_activity(img):
     return activity, confidence    
 
 if __name__ == '__main__':
-    img = cv2.imread('F:\iot\last\cow.jpg')    # path of the test image
+    img = cv2.imread('/home/nasr/Courses/iot/cow2.jpg')    # path of the test image
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     activity, confidence = visualize_animal_activity(img)  
     print(activity, confidence) 

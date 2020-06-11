@@ -4,7 +4,7 @@ from __future__ import division
 from __future__ import print_function
 import tensorflow as tf
 import resnet
-from cv2 import cv2
+import cv2
 import numpy as np
 import json
 from collections import Counter
@@ -30,7 +30,8 @@ if num_batches==-1:
       num_batches= int(samples/batch_size)+1
 num_threads = 20
 depth = 152
-ckpt_path = '/root/phase2'  # Directory of the checkpoints
+#ckpt_path = '/home/nasr/Courses/iot/phase2'  # Directory of the checkpoints
+ckpt_path = '/root/phase2'
 
 def _test_preprocess(reshaped_image, crop_size, num_channels):
 
@@ -124,4 +125,4 @@ def recognize_activity():
 
   
 if __name__ == '__main__':
-            app.run()           
+            app.run(host='0.0.0.0')           
