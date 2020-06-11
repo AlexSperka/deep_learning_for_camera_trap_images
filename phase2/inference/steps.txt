@@ -1,0 +1,11 @@
+1) clone repo
+
+2) download weights in the same path of the repo
+
+3) unzip ./phase2.zip -d ./deep_learning_for_camera_trap_images/phase2/inference/
+
+4) cd ./deep_learning_for_camera_trap_images/phase2/
+
+5) sudo docker build ./inference -t animal_recognition
+
+6) sudo docker run -p 0.0.0.0:5000:5000 animal_recognition
