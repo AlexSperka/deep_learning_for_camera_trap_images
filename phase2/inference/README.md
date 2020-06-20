@@ -31,4 +31,4 @@ sudo docker build ./inference -t animal_recognition
 sudo docker run -p 0.0.0.0:5000:5000 animal_recognition
 
 ```
-**6. After running the docker image, client.py could be run after adding the path of the image whose inference results are required**
+**6. After running the docker image, client.py could be run after adding the path of the image whose inference results are required.**
