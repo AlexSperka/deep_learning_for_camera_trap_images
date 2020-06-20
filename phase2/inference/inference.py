@@ -30,7 +30,6 @@ if num_batches==-1:
       num_batches= int(samples/batch_size)+1
 num_threads = 20
 depth = 152
-#ckpt_path = '/home/nasr/Courses/iot/phase2'  # Directory of the checkpoints
 ckpt_path = '/root/phase2'
 
 def _test_preprocess(reshaped_image, crop_size, num_channels):
