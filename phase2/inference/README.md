@@ -24,7 +24,7 @@ cd ./deep_learning_for_camera_trap_images/phase2/
 sudo docker build ./inference -t animal_recognition
 
 ```
-* where animal_recognition is the name of the docker image and can be replaced with any name.
+* where **animal_recognition** is the name of the docker image and can be replaced with any name.
 
 **5. Run the docker image**
 ```
