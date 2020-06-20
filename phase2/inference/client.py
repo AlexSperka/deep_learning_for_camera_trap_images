@@ -20,7 +20,7 @@ def visualize_animal_activity(img):
     return activity, confidence    
 
 if __name__ == '__main__':
-    img = cv2.imread(<image path>)    # add the image path, ex: '/home/animal.jpg'
+    img = cv2.imread(<image path>)    # Add the image path, ex: '/home/animal.jpg'
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     activity, confidence = visualize_animal_activity(img)  
     print(activity, confidence) 
