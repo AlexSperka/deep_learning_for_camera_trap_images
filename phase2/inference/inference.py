@@ -32,11 +32,13 @@ num_threads = 20
 depth = 152
 ckpt_path = '/root/phase2'         # Path of the checkpoints after building the docker image
 
+tf.compat.v1.disable_eager_execution()  #<--- Disable eager execution
+
 def _test_preprocess(reshaped_image, crop_size, num_channels):
 
   # Image processing for evaluation.
   # Crop the central [height, width] of the image.
-  resized_image = tf.image.resize_image_with_crop_or_pad(reshaped_image, crop_size[0], crop_size[1])
+  resized_image = tf.image.resize_with_crop_or_pad(reshaped_image, crop_size[0], crop_size[1])
   # Subtract off the mean and divide by the variance of the pixels.
   float_image = tf.image.per_image_standardization(resized_image)
   # Set the shapes of tensors.
@@ -81,9 +83,9 @@ app.config['DEBUG'] = True
 g = tf.Graph().as_default()
 tf.device('/cpu:0')
 # Get images and labels.
-image = tf.placeholder(tf.string, name='input')
-reshaped_image = tf.to_float(tf.image.decode_jpeg(image, channels = num_channels))
-reshaped_image = tf.image.resize_images(reshaped_image, (load_size[0], load_size[1]))
+image = tf.compat.v1.placeholder(tf.string, name='input')
+reshaped_image = tf.cast(tf.image.decode_jpeg(image, channels = num_channels), tf.float32)
+reshaped_image = tf.image.resize(reshaped_image, (load_size[0], load_size[1]))
 reshaped_image = _test_preprocess(reshaped_image, crop_size, num_channels)
 imgs = reshaped_image[None, ...]
 # Performing computations on a GPU
@@ -108,10 +110,10 @@ for i in range(0,6):
   top1ind_bh[i]= top1_bh[i].indices
   top1val_bh[i]= top1_bh[i].values
   
-saver = tf.train.Saver(tf.global_variables())  
-sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
-sess.run(tf.global_variables_initializer())
-sess.run(tf.local_variables_initializer())
+saver = tf.compat.v1.train.Saver(tf.compat.v1.global_variables())  
+sess = tf.compat.v1.Session(config=tf.compat.v1.ConfigProto(allow_soft_placement=True))
+sess.run(tf.compat.v1.global_variables_initializer())
+sess.run(tf.compat.v1.local_variables_initializer())
 ckpt = tf.train.get_checkpoint_state(ckpt_path)
 print(ckpt_path)
 print(ckpt)
@@ -138,16 +140,7 @@ def recognize_activity():
     
     img_encoded=str(encode_img(img))
     img_decoded=decode_img(img_encoded)
-  #   image_req = str(encode_img(img))
-  #   # response = requests.request("POST", url=url+'recognize', headers=headers, data=image_req)
-    
-  #   # if not request.json or not 'img' in request.json:
-  #   #   abort(204)
-  #   # img = cv2.imread(request.json['img'])    # Add the image path, ex: '/home/animal.jpg'
-  #   # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-  #   # image_req = json.dumps({'img': str(encode_img(img))})
-    
-  #   img = decode_img(image_req)
+
     id, confidence_id, count, confidence_count, activity, confidence_activity  = inference_model(image,img_decoded)
     return make_response(jsonify({'Status: ': 'finished', 'id': json.dumps(id.tolist()), 'confidence_id': json.dumps(confidence_id.tolist()), 'count': json.dumps(count.tolist()), 'confidence_count': json.dumps(confidence_count.tolist()), 'activity': json.dumps(activity.tolist()), 'confidence_activity': json.dumps(confidence_activity.tolist())}), 200)   
 
