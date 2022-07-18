@@ -45,11 +45,11 @@ def _test_preprocess(reshaped_image, crop_size, num_channels):
   return float_image
 
 def decode_img(img_str):
-            img_bytes = bytes(img_str, 'utf-8')
-            img_buff = base64.b64decode(img_bytes)
-            img_jpg = np.frombuffer(img_buff, dtype=np.uint8)
-            img = cv2.imdecode(img_jpg, cv2.IMREAD_COLOR)
-            return img  
+  img_bytes = bytes(img_str, 'utf-8')
+  img_buff = base64.b64decode(img_bytes)
+  img_jpg = np.frombuffer(img_buff, dtype=np.uint8)
+  img = cv2.imdecode(img_jpg, cv2.IMREAD_COLOR)
+  return img  
 
 def read_img(image,desired_width = 256, desired_height = 256):
   img = cv2.resize(image, (desired_width, desired_height))
@@ -60,12 +60,20 @@ def read_img(image,desired_width = 256, desired_height = 256):
 def inference_model(image,input_img):
   img = read_img(input_img)
   top5guesses_id, top5conf, top3guesses_cn, top3conf, top1guesses_bh, top1conf = sess.run([top5ind_id, top5val_id, top3ind_cn, top3val_cn, top1ind_bh, top1val_bh], feed_dict = {image: img})
+  
   activity = np.zeros(6)
-  confidence = np.zeros(6)
+  confidence_activity = np.zeros(6)
+  
+  count = top3guesses_cn
+  confidence_count = top3conf
+  
+  id = top5guesses_id
+  confidence_id = top5conf
+  
   for i in range(0,6):
     activity[i] = top1guesses_bh[i][0][0]
-    confidence[i] = top1conf[i][0][0]
-  return activity, confidence 
+    confidence_activity[i] = top1conf[i][0][0]
+  return id, confidence_id, count, confidence_count, activity, confidence_activity 
 
 app = Flask(__name__)
 
@@ -89,7 +97,7 @@ top5val_id= top5_id.values
 top3_cn = tf.nn.top_k(tf.nn.softmax(logits[1]), 3)
 top3ind_cn= top3_cn.indices
 top3val_cn= top3_cn.values
-# Additional Attributes (e.g. description)
+# Additional Attributes (e.g. description) == behavior
 top1_bh= [None]*6
 top1ind_bh= [None]*6
 top1val_bh= [None]*6
@@ -113,15 +121,33 @@ if ckpt: #and ckpt.model_checkpoint_path:
 else:
   print('error')  
 
+def encode_img(image):
+    _, buffer = cv2.imencode('.jpg', image)
+    enc_buff = base64.b64encode(buffer)
+    return str(enc_buff, 'utf-8')
+
 @app.route('/model/api/v1.0/recognize', methods=['POST'])
 def recognize_activity():
-  if not request.json or not 'img' in request.json:
+  img=None
+  if not request.json or not 'img_path' in request.json:
     abort(204)
-  img = decode_img(request.json['img'])
-  activity, confidence = inference_model(image,img)
-
-  return make_response(jsonify({'Status: ': 'finished', 'activity': json.dumps(activity.tolist()), 'confidence': json.dumps(confidence.tolist())}), 200)   
+  img = cv2.imread(request.json['img_path'])    # Add the image path, ex: '/home/animal.jpg'
+  if(img is not None):
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+  #   image_req = str(encode_img(img))
+  #   # response = requests.request("POST", url=url+'recognize', headers=headers, data=image_req)
+    
+  #   # if not request.json or not 'img' in request.json:
+  #   #   abort(204)
+  #   # img = cv2.imread(request.json['img'])    # Add the image path, ex: '/home/animal.jpg'
+  #   # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+  #   # image_req = json.dumps({'img': str(encode_img(img))})
+    
+  #   img = decode_img(image_req)
+    id, confidence_id, count, confidence_count, activity, confidence_activity  = inference_model(image,img)
+    return make_response(jsonify({'Status: ': 'finished', 'id': json.dumps(id.tolist()), 'confidence_id': json.dumps(confidence_id.tolist()), 'count': json.dumps(count.tolist()), 'confidence_count': json.dumps(confidence_count.tolist()), 'activity': json.dumps(activity.tolist()), 'confidence_activity': json.dumps(confidence_activity.tolist())}), 200)   
 
   
 if __name__ == '__main__':
-            app.run(host='0.0.0.0')           
+  app.run(host='0.0.0.0')    
+  

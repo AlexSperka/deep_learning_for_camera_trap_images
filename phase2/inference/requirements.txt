@@ -1,8 +1,9 @@
-Flask==1.1.1
+Flask==2.1.*
 tensorflow==1.14.0
 scipy
 numpy
 scikit-learn
-opencv-python
+opencv-python-headless
 requests
 flask-RESTful
+protobuf==3.20.*

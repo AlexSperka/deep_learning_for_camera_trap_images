@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  inference:
+    container_name: inference_container
+    restart: on-failure
+    build:
+      context: phase2/inference
+      dockerfile: Dockerfile
+    ports:
+      - 5012:5012
