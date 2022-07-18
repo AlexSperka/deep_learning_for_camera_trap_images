@@ -1,7 +1,7 @@
 FROM python:3.7
 
 #application port
-EXPOSE 5000
+EXPOSE 5010
 
 # set noninteractive mode to fix errors related to apt-get
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
@@ -26,4 +26,7 @@ COPY . /root/
 
 WORKDIR /root/
 
-ENTRYPOINT  python3 inference.py
+# ENTRYPOINT  python3 inference.py
+
+ENV FLASK_APP="inference.py" FLASK_DEBUG=1 FLASK_ENV=docker
+CMD ["python3", "-m" ,"flask", "run", "-h", "0.0.0.0"]

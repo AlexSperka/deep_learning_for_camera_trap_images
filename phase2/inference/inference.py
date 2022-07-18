@@ -76,6 +76,7 @@ def inference_model(image,input_img):
   return id, confidence_id, count, confidence_count, activity, confidence_activity 
 
 app = Flask(__name__)
+app.config['DEBUG'] = True
 
 g = tf.Graph().as_default()
 tf.device('/cpu:0')
@@ -134,6 +135,9 @@ def recognize_activity():
   img = cv2.imread(request.json['img_path'])    # Add the image path, ex: '/home/animal.jpg'
   if(img is not None):
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    
+    img_encoded=str(encode_img(img))
+    img_decoded=decode_img(img_encoded)
   #   image_req = str(encode_img(img))
   #   # response = requests.request("POST", url=url+'recognize', headers=headers, data=image_req)
     
@@ -144,7 +148,7 @@ def recognize_activity():
   #   # image_req = json.dumps({'img': str(encode_img(img))})
     
   #   img = decode_img(image_req)
-    id, confidence_id, count, confidence_count, activity, confidence_activity  = inference_model(image,img)
+    id, confidence_id, count, confidence_count, activity, confidence_activity  = inference_model(image,img_decoded)
     return make_response(jsonify({'Status: ': 'finished', 'id': json.dumps(id.tolist()), 'confidence_id': json.dumps(confidence_id.tolist()), 'count': json.dumps(count.tolist()), 'confidence_count': json.dumps(confidence_count.tolist()), 'activity': json.dumps(activity.tolist()), 'confidence_activity': json.dumps(confidence_activity.tolist())}), 200)   
 
   

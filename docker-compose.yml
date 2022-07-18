@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.7'
 services:
   inference:
     container_name: inference_container
@@ -7,4 +7,4 @@ services:
       context: phase2/inference
       dockerfile: Dockerfile
     ports:
-      - 5012:5012
+      - 5010:5000
