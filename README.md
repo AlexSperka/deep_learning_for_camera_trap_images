@@ -1,67 +1,61 @@
 # deep_learning_for_camera_trap_images
-This repository contains the code used for the following paper:
+This repository is a fork, please go to [upstream repository](https://github.com/Evolving-AI-Lab/deep_learning_for_camera_trap_images) to see details and the original Readme. New features are build on top of the [fork of Mo-nasr](https://github.com/Mo-nasr/deep_learning_for_camera_trap_images).
 
-[Automatically identifying, counting, and describing wild animals in camera-trap images with deep learning](http://www.pnas.org/content/early/2018/06/04/1719367115)
+Goal: Get this running as a stable API to classify wildlife images. Might add the "animal or no animal in image" classification (phase 1) to the pipeline soon.
 
-Authors: [Mohammad Sadegh Norouzzadeh](http://arash.norouzzadeh.com), Anh Nguyen, Margaret Kosmala, Ali Swanson, Meredith Palmer, Craig Packer, Jeff Clune
+----------
 
-**If you use this code in an academic article, please cite the following paper:**
+
+## New features
+
+- Using docker-compose to spin up a container
+- Using python 3.9
+- Converted code from fork using tensorflow 1.14 into tensorflow 2.9 .1
+- Super basic API feature to get an image classified using img_path (that is in the same directory right now)
+- Csv file with the full species list, taken from the paper appendix
+- Csv file with the full activity list (behaviour), taken from the paper
+
+
+Will try to clean this up and convert more and more eventually.
+
+
+----------
+
+
+## Getting started with classification via API (adopted/simplified version Mo-nasr's readme)
+**1. Clone the repo**
 ```
-	@article {Norouzzadeh201719367,
-		author = {Norouzzadeh, Mohammad Sadegh and Nguyen, Anh and Kosmala, Margaret and Swanson, Alexandra and Palmer, Meredith S. and Packer, Craig and Clune, Jeff},
-		title = {Automatically identifying, counting, and describing wild animals in camera-trap images with deep learning},
-		year = {2018},
-		doi = {10.1073/pnas.1719367115},
-		publisher = {National Academy of Sciences},
-		issn = {0027-8424},
-		URL = {http://www.pnas.org/content/early/2018/06/04/1719367115},
-		eprint = {http://www.pnas.org/content/early/2018/06/04/1719367115.full.pdf},
-		journal = {Proceedings of the National Academy of Sciences}
-	}
+git clone https://github.com/AlexSperka/deep_learning_for_camera_trap_images.git
 ```
 
-Most of the code in this repository is taken from [here](https://github.com/arashno/tensorflow_multigpu_imagenet)
+**2. Download the checkpoints from the following link in the same location the repo was cloned**
+* Phase 2 (ResNet-152 architecture): https://drive.google.com/file/d/1KTV9dmqkv0xrheIOEkPXbqeg36_rXJ_E/view?usp=sharing
 
-This repository has four independent parts:
+**3. Unzip and paste the checkpoints into working directory, for example by copy/pasting the following commands in the terminal**
+```
+unzip ./phase2.zip -d ./deep_learning_for_camera_trap_images/phase2/inference/
 
-1- The code used for Task I: Detecting Images That Contain Animals (phase1 folder)
+```
+```
+cd ./deep_learning_for_camera_trap_images/phase2/
 
-2- The code used for Task II,III, and IV: identifying, counting, and describing animals in images (phase 2 folder)
+```
+**4. Run the docker container**
+```
+docker-compose up --build
 
-3- The code used for Task II only, (all the transfer learning experiments for Task II used this part of the repo) (phase2_recognition_only folder)
+```
+**5. Use Postman or any other form to communicate with an API to get image classifications**
+- Address: http://localhost:5010/model/api/v1.0/recognize
+- Method: POST
+- Example Request Body:
+```json
+{
+    "img_path":"images//elephant.JPG"
+}
+```
 
-4- resize.py is used for resizing the input images for all the other parts
+**6. Adjust/add configuration in docker-compose.yaml like port mapping and other files as needed**
 
 
-For more information on how to use this repo please refer to the base repo at [this link](https://github.com/arashno/tensorflow_multigpu_imagenet)
-
-## 1. Requirements
-
-### Requirements
-To use this code, you will need to install the following:
-* Python 2.7
-* Tenorflow 
-* NumPy
-* SciPy
-* MatPlot Lib
-
-### 2. Running
-Pre-trained models could be found at the following links:
-
-* Phase 1 (VGG architecture):
-
-https://drive.google.com/open?id=19MG7NY_pnQH2egAfEEr-yTlFteoMXe9Y
-
-* Phase 2 (ResNet-152 architecture):
-
-https://drive.google.com/open?id=15oXo7Zm1N9LXMFg0zuxgRM6FJoF-X2BU
-
-* Phase 2 recognition only (ResNet-152 architecture):
-
-https://drive.google.com/open?id=1xYgfIUS2IBKCDpcXCZCDjoEzn63dAWc1
-
-## 3. Licenses
-This code is licensed under MIT License. 
-
-## 4. Questions?
-For questions/suggestions, feel free to [email](mailto:arash.norouzzadeh@gmail.com), tweet to [@arashnorouzzade](https://twitter.com/arashnorouzzade) or create a github issue. 
+----------
