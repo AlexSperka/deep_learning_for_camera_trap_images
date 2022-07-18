@@ -12,8 +12,8 @@ Goal: Get this running as a stable API to classify wildlife images. Might add th
 - Using python 3.9
 - Converted code from fork using tensorflow 1.14 into tensorflow 2.9 .1
 - Super basic API feature to get an image classified using img_path (that is in the same directory right now)
-- Csv file with the full species list, taken from the paper appendix
-- Csv file with the full activity list (behaviour), taken from the paper
+- CSV file with the full species list, taken from the paper appendix
+- CSV file with the full activity list (behaviour), taken from the paper
 
 
 Will try to clean this up and convert more and more eventually.
